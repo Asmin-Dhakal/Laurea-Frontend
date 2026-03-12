@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 type Student = {
   id: number;
@@ -14,31 +14,30 @@ type Student = {
 export default function VerifiedStudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   const fetchStudents = async (showLoader = false) => {
     if (showLoader) setLoading(true);
-    
+
     try {
-      const response = await fetch('https://unsurging-indicatory-earlie.ngrok-free.dev/verified-students', {
+      const response = await fetch("/api/verified-students", {
         headers: {
-          'x-access-password': password,
-          'ngrok-skip-browser-warning': 'true',
-        }
+          "x-access-password": password,
+        },
       });
 
       if (response.status === 401) {
-        setError('Invalid password. Please try again.');
+        setError("Invalid password. Please try again.");
         if (showLoader) setLoading(false);
         return false;
       }
 
       if (!response.ok) {
-        throw new Error('Failed to fetch students');
+        throw new Error("Failed to fetch students");
       }
 
       const data = await response.json();
@@ -47,7 +46,7 @@ export default function VerifiedStudentsPage() {
       if (showLoader) setLoading(false);
       return true;
     } catch (err) {
-      setError('Failed to connect to server. Please try again.');
+      setError("Failed to connect to server. Please try again.");
       if (showLoader) setLoading(false);
       return false;
     }
@@ -55,7 +54,7 @@ export default function VerifiedStudentsPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     const success = await fetchStudents(true);
     if (success) {
@@ -74,10 +73,11 @@ export default function VerifiedStudentsPage() {
     return () => clearInterval(interval);
   }, [authenticated, password]);
 
-  const filteredStudents = students.filter(s =>
-    s.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.seat_number.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredStudents = students.filter(
+    (s) =>
+      s.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.seat_number.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Login Screen
@@ -87,17 +87,34 @@ export default function VerifiedStudentsPage() {
         <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
-              <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              <svg
+                className="w-8 h-8 text-indigo-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Verified Students</h1>
-            <p className="text-gray-600">Enter password to access the dashboard</p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              Verified Students
+            </h1>
+            <p className="text-gray-600">
+              Enter password to access the dashboard
+            </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Password
               </label>
               <input
@@ -125,14 +142,30 @@ export default function VerifiedStudentsPage() {
             >
               {loading ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Authenticating...
                 </span>
               ) : (
-                'Access Dashboard'
+                "Access Dashboard"
               )}
             </button>
           </form>
@@ -148,7 +181,9 @@ export default function VerifiedStudentsPage() {
         {/* Header Section */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
           <div className="flex items-center justify-between mb-2">
-            <h1 className="text-4xl font-bold text-gray-800">Verified Students</h1>
+            <h1 className="text-4xl font-bold text-gray-800">
+              Verified Students
+            </h1>
             <div className="flex items-center gap-4">
               <div className="text-sm text-gray-500">
                 {lastUpdate && (
@@ -161,7 +196,7 @@ export default function VerifiedStudentsPage() {
               <button
                 onClick={() => {
                   setAuthenticated(false);
-                  setPassword('');
+                  setPassword("");
                   setStudents([]);
                 }}
                 className="text-gray-600 hover:text-gray-800 font-medium transition"
@@ -170,7 +205,9 @@ export default function VerifiedStudentsPage() {
               </button>
             </div>
           </div>
-          <p className="text-gray-600">Track and manage verified student attendance</p>
+          <p className="text-gray-600">
+            Track and manage verified student attendance
+          </p>
         </div>
 
         {/* Search Bar */}
@@ -199,7 +236,8 @@ export default function VerifiedStudentsPage() {
           </div>
           {searchTerm && (
             <p className="mt-3 text-sm text-gray-600">
-              Found {filteredStudents.length} student{filteredStudents.length !== 1 ? 's' : ''}
+              Found {filteredStudents.length} student
+              {filteredStudents.length !== 1 ? "s" : ""}
             </p>
           )}
         </div>
@@ -210,18 +248,33 @@ export default function VerifiedStudentsPage() {
             <table className="w-full">
               <thead className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">#</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">Email</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">Seat</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">Verifications</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">Last Verified</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                    #
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                    Name
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                    Email
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                    Seat
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                    Verifications
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                    Last Verified
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {filteredStudents.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    <td
+                      colSpan={6}
+                      className="px-6 py-12 text-center text-gray-500"
+                    >
                       No students found matching your search
                     </td>
                   </tr>
@@ -231,13 +284,17 @@ export default function VerifiedStudentsPage() {
                       key={s.id}
                       className="hover:bg-indigo-50 transition duration-150 ease-in-out"
                     >
-                      <td className="px-6 py-4 text-gray-600 font-medium">{i + 1}</td>
+                      <td className="px-6 py-4 text-gray-600 font-medium">
+                        {i + 1}
+                      </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center">
                           <div className="w-10 h-10 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
                             {s.full_name.charAt(0).toUpperCase()}
                           </div>
-                          <span className="text-gray-800 font-medium">{s.full_name}</span>
+                          <span className="text-gray-800 font-medium">
+                            {s.full_name}
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-gray-600">{s.email}</td>
@@ -254,12 +311,12 @@ export default function VerifiedStudentsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-gray-600 text-sm">
-                        {new Date(s.last_verified_at).toLocaleString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
+                        {new Date(s.last_verified_at).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         })}
                       </td>
                     </tr>
@@ -274,10 +331,14 @@ export default function VerifiedStudentsPage() {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="text-sm text-gray-600 mb-1">Total Students</div>
-            <div className="text-3xl font-bold text-indigo-600">{students.length}</div>
+            <div className="text-3xl font-bold text-indigo-600">
+              {students.length}
+            </div>
           </div>
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="text-sm text-gray-600 mb-1">Total Verifications</div>
+            <div className="text-sm text-gray-600 mb-1">
+              Total Verifications
+            </div>
             <div className="text-3xl font-bold text-green-600">
               {students.reduce((sum, s) => sum + s.verify_count, 0)}
             </div>
