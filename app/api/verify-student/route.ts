@@ -33,11 +33,11 @@ export async function POST(req: NextRequest) {
         const trimmedEmail = (email as string).trim().toLowerCase();
 
         const [nameRows] = await pool.execute<StudentRow[]>(
-            'SELECT * FROM students WHERE full_name = ? LIMIT 1',
+            'SELECT * FROM students WHERE LOWER(full_name) = ? LIMIT 1',
             [trimmedName]
         );
         const [emailRows] = await pool.execute<StudentRow[]>(
-            'SELECT * FROM students WHERE email = ? LIMIT 1',
+            'SELECT * FROM students WHERE LOWER(email) = ? LIMIT 1',
             [trimmedEmail]
         );
 
@@ -74,14 +74,14 @@ export async function POST(req: NextRequest) {
 
         // Upsert into verified_students
         const [existingRows] = await pool.execute<VerifiedStudentRow[]>(
-            'SELECT * FROM verified_students WHERE email = ? LIMIT 1',
+            'SELECT * FROM verified_students WHERE LOWER(email) = ? LIMIT 1',
             [trimmedEmail]
         );
         const existing = existingRows[0] ?? null;
 
         if (existing) {
             await pool.execute(
-                'UPDATE verified_students SET verify_count = verify_count + 1 WHERE email = ?',
+                'UPDATE verified_students SET verify_count = verify_count + 1 WHERE LOWER(email) = ?',
                 [trimmedEmail]
             );
             return NextResponse.json({
