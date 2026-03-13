@@ -20,37 +20,40 @@ export default function VerifiedStudentsPage() {
   const [error, setError] = useState("");
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  const fetchStudents = useCallback(async (showLoader = false) => {
-    if (showLoader) setLoading(true);
+  const fetchStudents = useCallback(
+    async (showLoader = false) => {
+      if (showLoader) setLoading(true);
 
-    try {
-      const response = await fetch("/api/verified-students", {
-        headers: {
-          "x-access-password": password,
-        },
-      });
+      try {
+        const response = await fetch("/api/verified-students", {
+          headers: {
+            "x-access-password": password,
+          },
+        });
 
-      if (response.status === 401) {
-        setError("Invalid password. Please try again.");
+        if (response.status === 401) {
+          setError("Invalid password. Please try again.");
+          if (showLoader) setLoading(false);
+          return false;
+        }
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch students");
+        }
+
+        const data = await response.json();
+        setStudents(Array.isArray(data) ? data : []);
+        setLastUpdate(new Date());
+        if (showLoader) setLoading(false);
+        return true;
+      } catch {
+        setError("Failed to connect to server. Please try again.");
         if (showLoader) setLoading(false);
         return false;
       }
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch students");
-      }
-
-      const data = await response.json();
-      setStudents(Array.isArray(data) ? data : []);
-      setLastUpdate(new Date());
-      if (showLoader) setLoading(false);
-      return true;
-    } catch {
-      setError("Failed to connect to server. Please try again.");
-      if (showLoader) setLoading(false);
-      return false;
-    }
-  }, [password]);
+    },
+    [password],
+  );
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
