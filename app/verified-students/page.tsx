@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type Student = {
   id: number;
@@ -20,7 +20,7 @@ export default function VerifiedStudentsPage() {
   const [error, setError] = useState("");
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  const fetchStudents = async (showLoader = false) => {
+  const fetchStudents = useCallback(async (showLoader = false) => {
     if (showLoader) setLoading(true);
 
     try {
@@ -45,12 +45,12 @@ export default function VerifiedStudentsPage() {
       setLastUpdate(new Date());
       if (showLoader) setLoading(false);
       return true;
-    } catch (err) {
+    } catch {
       setError("Failed to connect to server. Please try again.");
       if (showLoader) setLoading(false);
       return false;
     }
-  };
+  }, [password]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +71,7 @@ export default function VerifiedStudentsPage() {
     }, 5000); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
-  }, [authenticated, password]);
+  }, [authenticated, fetchStudents]);
 
   const filteredStudents = students.filter(
     (s) =>

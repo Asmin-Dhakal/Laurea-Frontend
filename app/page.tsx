@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 export default function Home() {
@@ -181,16 +182,20 @@ export default function Home() {
               {/* Logo Placeholders */}
               <div className="flex items-center justify-center space-x-4">
                 <div className="bg-white rounded-2xl p-3 shadow-2xl border-2 border-white/50 transform hover:scale-105 transition-transform duration-300">
-                  <img
+                  <Image
                     src="/laurea-logo.jpeg"
                     alt="Laurea UAS"
+                    width={128}
+                    height={64}
                     className="w-32 h-16 object-contain"
                   />
                 </div>
                 <div className="bg-white rounded-2xl p-3 shadow-2xl border-2 border-white/50 transform hover:scale-105 transition-transform duration-300">
-                  <img
+                  <Image
                     src="/unigo-logo.png"
                     alt="UNIGO"
+                    width={128}
+                    height={64}
                     className="w-32 h-16 mr-2 object-contain"
                   />
                 </div>
