@@ -9,8 +9,8 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const sql = db();
     try {
+        const sql = db();
         const rows = await sql`SELECT * FROM verified_students ORDER BY last_verified_at DESC`;
         return NextResponse.json(rows);
     } catch (err) {
