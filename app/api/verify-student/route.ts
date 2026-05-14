@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import db from '@/lib/db';
 
 export async function POST(req: NextRequest) {
+    const sql = db();
     try {
         const body = await req.json();
         const { name, email } = body;

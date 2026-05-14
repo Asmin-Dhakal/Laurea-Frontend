@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import db from '@/lib/db';
 
 export async function GET(req: NextRequest) {
     const password = req.headers.get('x-access-password');
@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const sql = db();
     try {
         const rows = await sql`SELECT * FROM verified_students ORDER BY last_verified_at DESC`;
         return NextResponse.json(rows);

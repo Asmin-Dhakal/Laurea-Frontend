@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import sql from '@/lib/db';
+import db from '@/lib/db';
 
 export async function GET() {
+    const sql = db();
     try {
         const rows = await sql`SELECT NOW() AS now, current_database() AS database_name`;
 
