@@ -1,21 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pool from '@/lib/db';
-import { RowDataPacket } from 'mysql2';
-
-interface StudentRow extends RowDataPacket {
-    id: number;
-    full_name: string;
-    email: string;
-    seat_number: string;
-}
-
-interface VerifiedStudentRow extends RowDataPacket {
-    id: number;
-    full_name: string;
-    email: string;
-    seat_number: string;
-    verify_count: number;
-}
+import sql from '@/lib/db';
 
 export async function POST(req: NextRequest) {
     try {
@@ -32,14 +16,8 @@ export async function POST(req: NextRequest) {
         const trimmedName = (name as string).trim().toLowerCase();
         const trimmedEmail = (email as string).trim().toLowerCase();
 
-        const [nameRows] = await pool.execute<StudentRow[]>(
-            'SELECT * FROM students WHERE LOWER(full_name) = ? LIMIT 1',
-            [trimmedName]
-        );
-        const [emailRows] = await pool.execute<StudentRow[]>(
-            'SELECT * FROM students WHERE LOWER(email) = ? LIMIT 1',
-            [trimmedEmail]
-        );
+        const nameRows = await sql`SELECT * FROM students WHERE LOWER(full_name) = ${trimmedName} LIMIT 1`;
+        const emailRows = await sql`SELECT * FROM students WHERE LOWER(email) = ${trimmedEmail} LIMIT 1`;
 
         const nameMatch = nameRows[0] ?? null;
         const emailMatch = emailRows[0] ?? null;
@@ -73,17 +51,11 @@ export async function POST(req: NextRequest) {
         }
 
         // Upsert into verified_students
-        const [existingRows] = await pool.execute<VerifiedStudentRow[]>(
-            'SELECT * FROM verified_students WHERE LOWER(email) = ? LIMIT 1',
-            [trimmedEmail]
-        );
+        const existingRows = await sql`SELECT * FROM verified_students WHERE LOWER(email) = ${trimmedEmail} LIMIT 1`;
         const existing = existingRows[0] ?? null;
 
         if (existing) {
-            await pool.execute(
-                'UPDATE verified_students SET verify_count = verify_count + 1 WHERE LOWER(email) = ?',
-                [trimmedEmail]
-            );
+            await sql`UPDATE verified_students SET verify_count = verify_count + 1, last_verified_at = NOW() WHERE LOWER(email) = ${trimmedEmail}`;
             return NextResponse.json({
                 success: true,
                 message: 'Verification updated',
@@ -92,10 +64,7 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        await pool.execute(
-            'INSERT INTO verified_students (full_name, email, seat_number, verify_count) VALUES (?, ?, ?, 1)',
-            [nameMatch.full_name, nameMatch.email, nameMatch.seat_number]
-        );
+        await sql`INSERT INTO verified_students (full_name, email, seat_number, verify_count) VALUES (${nameMatch.full_name}, ${nameMatch.email}, ${nameMatch.seat_number}, 1)`;
 
         return NextResponse.json({
             success: true,

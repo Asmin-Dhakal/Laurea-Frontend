@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import sql from '@/lib/db';
 
 export async function GET(req: NextRequest) {
     const password = req.headers.get('x-access-password');
@@ -10,9 +10,7 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const [rows] = await pool.execute(
-            'SELECT * FROM verified_students ORDER BY last_verified_at DESC'
-        );
+        const rows = await sql`SELECT * FROM verified_students ORDER BY last_verified_at DESC`;
         return NextResponse.json(rows);
     } catch (err) {
         console.error('[verified-students]', err);

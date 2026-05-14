@@ -1,17 +1,9 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
-import { RowDataPacket } from 'mysql2';
-
-interface HealthRow extends RowDataPacket {
-    now: string;
-    database_name: string;
-}
+import sql from '@/lib/db';
 
 export async function GET() {
     try {
-        const [rows] = await pool.execute<HealthRow[]>(
-            'SELECT NOW() AS now, DATABASE() AS database_name'
-        );
+        const rows = await sql`SELECT NOW() AS now, current_database() AS database_name`;
 
         const row = rows[0];
 
